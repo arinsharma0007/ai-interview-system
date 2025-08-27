@@ -1,0 +1,18 @@
+{% extends "accounts/base.html" %} {% load static %} {% block content %}
+<div class="confirm-delete-container">
+  <h2>Confirm Deletion</h2>
+  <p>
+    Are you sure you want to delete candidate:
+    <strong>{{ candidate.name }}</strong>?
+  </p>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="button-group">
+      <button type="submit" class="btn btn-danger btn-lg">Delete</button>
+      <a href="{% url 'candidate_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+
+  {% endblock %}
+</body>

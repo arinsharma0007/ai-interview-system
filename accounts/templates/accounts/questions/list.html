@@ -1,0 +1,60 @@
+{% extends "accounts/base.html" %} {% load static %} {% block content %}
+
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">All Questions</h2>
+    <a href="{% url 'question_create' %}" class="btn btn-success">
+      ➕ Add New Question
+    </a>
+  </div>
+
+  {% if questions %} {% for question in questions %}
+  <div class="question-item d-flex justify-content-between align-items-start">
+    <div>
+      <div class="question-title">{{ question.subject }}</div>
+      <div class="question-text">{{ question.text }}</div>
+      <div class="mt-2">
+        <span
+          class="soft-badge {% if question.source_type == 'AI' %}ai{% else %}manual{% endif %}"
+        >
+          {{ question.source_type }}
+        </span>
+        {% if question.selected %}
+        <span class="soft-badge selected">Selected</span>
+        {% else %}
+        <span class="soft-badge not-selected">Not Selected</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="d-flex flex-column gap-1">
+      {% if question.selected %}
+      <a
+        href="{% url 'toggle_selected' question.pk %}"
+        class="btn btn-outline-secondary action-btn"
+        >Unselect</a
+      >
+      {% else %}
+      <a
+        href="{% url 'toggle_selected' question.pk %}"
+        class="btn btn-outline-primary action-btn"
+        >Select</a
+      >
+      {% endif %}
+      <a
+        href="{% url 'question_edit' question.pk %}"
+        class="btn btn-warning action-btn"
+        >Edit</a
+      >
+      <a
+        href="{% url 'question_delete' question.pk %}"
+        class="btn btn-danger action-btn"
+        >Delete</a
+      >
+    </div>
+  </div>
+  {% endfor %} {% else %}
+  <p class="text-center text-muted">No questions available.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

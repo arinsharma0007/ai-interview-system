@@ -1,0 +1,14 @@
+{% extends "accounts/base.html" %} {% load static %} {% block content %}
+<div class="interview-start-container">
+  <h2>Welcome, {{ candidate.name }}!</h2>
+  <p>
+    You are about to begin your interview. You will have
+    {{candidate.duration_minutes }} minutes.
+  </p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit">Start Interview</button>
+  </form>
+</div>
+{% endblock %}
