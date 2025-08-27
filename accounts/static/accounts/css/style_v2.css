@@ -1,0 +1,719 @@
+/* ========================================
+   Global and Layout Styles
+======================================== */
+
+:root {
+  --primary-color: #4a69bd;
+  --primary-hover-color: #3b54a0;
+  --secondary-color: #6c757d;
+  --secondary-hover-color: #5a6268;
+  --dark-color: #343a40;
+  --dark-hover-color: #495057;
+  --light-color: #f8f9fa;
+  --white-color: #ffffff;
+  --border-color: #dee2e6;
+  --danger-color: #dc3545;
+  --danger-hover-color: #c82333;
+  --warning-color: #ffc107;
+  --success-color: #28a745;
+  --success-hover-color: #218838;
+
+  --font-family-base: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Universal Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--light-color);
+  min-height: 100vh;
+  font-family: var(--font-family-base);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  display: flex;
+  flex: 1;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: 30px 20px;
+  background-color: var(--light-color);
+  min-width: 0;
+}
+
+.custom-container {
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  background: var(--white-color);
+}
+
+h2,
+h3 {
+  font-weight: 600;
+}
+
+/* ========================================
+   Component Styles
+======================================== */
+
+/* Cards & Forms */
+.card {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: none;
+  border-radius: 16px;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.card-body {
+  padding: 40px;
+}
+
+.question-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.prompt-card {
+  max-width: 600px;
+  margin: 80px auto 0;
+  padding: 30px;
+  background-color: var(--white-color);
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+/* ========================================
+          Buttons
+======================================== */
+button,
+.btn {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.btn-outline-warning {
+  color: var(--warning-color);
+  border-color: var(--warning-color);
+}
+
+.btn-outline-warning:hover {
+  background-color: var(--warning-color);
+  color: black;
+}
+
+.btn-outline-danger {
+  color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--danger-color);
+  color: var(--white-color);
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+  font-weight: 500;
+}
+
+.btn-danger:hover {
+  background-color: var(--danger-hover-color);
+  border-color: var(--danger-hover-color);
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  font-weight: 500;
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover-color);
+  border-color: var(--secondary-hover-color);
+  transform: scale(1.05);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  border: none;
+  font-weight: 500;
+}
+
+.btn-success:hover {
+  background-color: var(--success-hover-color);
+  transform: scale(1.05);
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 0.875rem;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Tables */
+.table thead th {
+  background-color: var(--dark-color);
+  color: var(--white-color);
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* List Groups */
+.list-group-item {
+  background-color: var(--white-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  margin-bottom: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.list-group-item.candidate-item {
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+/* ========================================
+   Specific Page Styles
+======================================== */
+
+/* Confirm Delete */
+.confirm-delete {
+  max-width: 500px;
+  padding: 40px;
+  text-align: center;
+  margin: 40px auto;
+}
+
+.confirm-delete-title {
+  color: var(--danger-color);
+  margin-bottom: 20px;
+}
+
+.confirm-delete p {
+  font-size: 1.1rem;
+  color: #495057;
+  margin-bottom: 30px;
+}
+
+.confirm-delete strong {
+  color: var(--dark-color);
+  font-weight: 700;
+}
+
+/* Assign Questions */
+.assign-questions-container {
+  max-width: 700px;
+  margin: 50px auto;
+}
+
+.assign-questions-title {
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.form-check {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: background 0.3s ease;
+}
+
+.form-check:hover {
+  background-color: #f1f1f1;
+}
+
+.form-check-input {
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.form-check-label {
+  font-size: 16px;
+}
+
+/* ========================================
+   Utilities & Animations
+======================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   Media Queries
+======================================== */
+
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    min-width: 100%;
+    max-width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .content {
+    padding: 15px 5px;
+  }
+}
+
+/* ========================================
+   Candidate Add/Edit Page
+======================================== */
+
+.form-container {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 40px 30px;
+  background-color: var(--white-color);
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.form-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.form-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-container form p {
+  margin-bottom: 20px;
+}
+
+.form-container label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
+}
+
+.form-container input,
+.form-container select,
+.form-container textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.form-container input:focus,
+.form-container select:focus,
+.form-container textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 105, 189, 0.2);
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.form-buttons .btn {
+  width: 48%;
+}
+
+/* ========================================
+   Confirm Deletion Page Styles
+======================================== */
+
+.confirm-delete-container {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 40px 30px;
+  background-color: var(--white-color);
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.confirm-delete-container h2 {
+  color: var(--danger-color);
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.confirm-delete-container p {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.confirm-delete-container strong {
+  font-weight: bold;
+  color: var(--dark-color);
+}
+
+.confirm-delete-container .button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.confirm-delete-container .btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+/* ========================================
+   Question Page Unique Styles
+   (Prefix: qform-*)
+======================================== */
+
+.qform-wrapper {
+  max-width: 700px;
+  margin: 60px auto;
+  background-color: var(--white-color);
+  padding: 40px 35px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.qform-wrapper h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 30px;
+}
+
+.qform-wrapper form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.qform-wrapper label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #333;
+  display: block;
+}
+
+.qform-wrapper input,
+.qform-wrapper select,
+.qform-wrapper textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.qform-wrapper input:focus,
+.qform-wrapper select:focus,
+.qform-wrapper textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.15);
+  outline: none;
+}
+
+.qform-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.qform-buttons .btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+/* ========================================
+   Interview Start Page Styles
+   Prefix: interview-start-*
+======================================== */
+
+.interview-start-container {
+  max-width: 600px;
+  margin: 80px auto;
+  background-color: var(--white-color);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.6s ease-in-out;
+  text-align: center;
+}
+
+.interview-start-container h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.interview-start-container p {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.interview-start-container button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.interview-start-container button:hover {
+  background-color: #2c71bd; /* slightly darker shade */
+}
+
+/* ========================================
+   Interview Completion Page Styles
+   Prefix: interview-complete-*
+======================================== */
+
+.interview-complete-container {
+  max-width: 600px;
+  margin: 100px auto;
+  background-color: var(--white-color);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.interview-complete-container h2 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.interview-complete-container p {
+  font-size: 1.1rem;
+  color: #444;
+}
+
+/* ==============================
+   Interview Link Page Styles
+   Prefix: link-page-*
+============================== */
+
+/* Interview Link Page */
+.link-page-container {
+  max-width: 650px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #f9fafb, #eef1f6);
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.link-page-container h4 {
+  font-size: 1.6rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.link-page-container p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.link-page-code-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.link-page-code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.95rem;
+  color: #007bff;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.link-page-copy-btn {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border: none;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.link-page-copy-btn:hover {
+  background: linear-gradient(90deg, #0056b3, #003f88);
+  transform: translateY(-2px);
+}
+
+.link-page-copy-btn:active {
+  transform: translateY(0);
+}
+
+/* Toast Notification */
+.copy-toast {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #28a745;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 12px;
+  position: fixed;
+  z-index: 999;
+  left: 50%;
+  bottom: 30px;
+  font-size: 1rem;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  transition: visibility 0s, opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+.copy-toast.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Questions List Page */
+
+.question-item {
+  background: linear-gradient(135deg, #ffffff, #f9f9f9);
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+.question-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #fdfdfd, #f3f6ff);
+}
+.question-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #34495e;
+}
+.question-text {
+  color: #555;
+  font-size: 0.95rem;
+}
+.soft-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: #eef2f7;
+  color: #444;
+  margin-right: 5px;
+}
+.soft-badge.ai {
+  background-color: #e3f2fd;
+  color: #0d6efd;
+}
+.soft-badge.manual {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.soft-badge.selected {
+  background-color: #d4edda;
+  color: #155724;
+}
+.soft-badge.not-selected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+.action-btn {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}

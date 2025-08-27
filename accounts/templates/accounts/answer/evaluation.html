@@ -1,0 +1,29 @@
+<h2>Results for {{ candidate.name }}</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>Answer</th>
+      <th>AI Evaluation</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in answers %}
+    <tr>
+      <td>{{ a.question.text }}</td>
+      <td>{{ a.response }}</td>
+      <td>{{ a.evaluation }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<form method="POST">
+  {% csrf_token %}
+  <label for="verdict">Verdict:</label>
+  <select name="verdict">
+    <option value="Pass">Pass</option>
+    <option value="Fail">Fail</option>
+  </select>
+  <button class="btn btn-success">Finalize</button>
+</form>

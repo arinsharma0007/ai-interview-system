@@ -1,0 +1,35 @@
+{% extends "accounts/base.html" %} {% load static %} {% block content %}
+<body>
+  <div class="container">
+    <div class="prompt-card">
+      <h3 class="mb-4 text-center text-primary">Enter AI Prompt</h3>
+      <form action="{% url 'generate_ai_questions' %}" method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="prompt" class="form-label">Prompt</label>
+          <textarea
+            name="prompt"
+            id="prompt"
+            class="form-control"
+            placeholder="Enter your prompt here..."
+            rows="4"
+            required
+          ></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="subject" class="form-label">Subject</label>
+          <textarea
+            name="subject"
+            id="subject"
+            class="form-control"
+            placeholder="Enter subject..."
+            rows="1"
+            required
+          ></textarea>
+        </div>
+        <button class="btn btn-primary w-100">Generate Questions</button>
+      </form>
+    </div>
+  </div>
+</body>
+{% endblock %}

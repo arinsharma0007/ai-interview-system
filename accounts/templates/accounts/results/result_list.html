@@ -1,0 +1,26 @@
+{% extends "accounts/base.html" %} {% load static %} {% block content %}
+
+<body>
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Candidate Results</h2>
+    <div class="list-group">
+      {% for candidate in candidates %}
+      <div
+        class="list-group-item d-flex justify-content-between align-items-center"
+      >
+        <div>
+          <strong>{{ candidate.name }}</strong> – {{ candidate.subject }}
+        </div>
+        <a
+          href="{% url 'result_detail_view' candidate.candidate_id %}"
+          class="btn btn-outline-primary btn-sm"
+          >View Result</a
+        >
+      </div>
+      {% empty %}
+      <p class="text-muted">No candidates found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+{% endblock %}

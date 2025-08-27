@@ -1,0 +1,34 @@
+<script>
+  function copyLink() {
+    const linkText = document.getElementById("interviewLink").innerText;
+    navigator.clipboard
+      .writeText(linkText)
+      .then(() => {
+        // Show toast
+        const toast = document.getElementById("copyToast");
+        toast.classList.add("show");
+
+        // Hide toast after 2 seconds
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy link: ", err);
+      });
+  }
+</script>
+
+{% extends "accounts/base.html" %} {% load static %} {% block content %}
+<div class="link-page-container">
+  <h4>Interview Link for {{ candidate.name }}</h4>
+  <p>Share this link with the candidate to start the interview:</p>
+  <div class="link-page-code-wrapper">
+    <code id="interviewLink" class="link-page-code">{{ link }}</code>
+    <button class="link-page-copy-btn" onclick="copyLink()">📋 Copy</button>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div id="copyToast" class="copy-toast">✅ Interview link copied!</div>
+{% endblock %}

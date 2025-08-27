@@ -1,0 +1,33 @@
+{% extends "accounts/base.html" %} {% load static %} {% block content %}
+<body>
+  <div class="container mt-5">
+    <div class="card shadow p-4">
+      <h3 class="mb-4 text-primary">Select a Candidate to Assign Questions</h3>
+      <ul class="list-group">
+        {% for candidate in candidates %}
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
+          <span>
+            <strong>{{ candidate.name }}</strong> – {{ candidate.subject }}
+          </span>
+          {% if candidate.candidate_id %}
+          <a
+            href="{% url 'assign_questions' candidate.candidate_id %}"
+            class="btn btn-success btn-sm"
+            >Assign</a
+          >
+          {% else %}
+          <span class="text-danger">No ID</span>
+          {% endif %}
+        </li>
+        {% empty %}
+        <li class="list-group-item text-muted text-center">
+          No candidates found.
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</body>
+{% endblock %}
