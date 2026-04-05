@@ -1,35 +1,43 @@
-{% extends "accounts/base.html" %} {% load static %} {% block content %}
-<body>
-  <div class="container">
-    <div class="prompt-card">
-      <h3 class="mb-4 text-center text-primary">Enter AI Prompt</h3>
-      <form action="{% url 'generate_ai_questions' %}" method="POST">
-        {% csrf_token %}
-        <div class="mb-3">
-          <label for="prompt" class="form-label">Prompt</label>
-          <textarea
-            name="prompt"
-            id="prompt"
-            class="form-control"
-            placeholder="Enter your prompt here..."
-            rows="4"
-            required
-          ></textarea>
-        </div>
-        <div class="mb-3">
-          <label for="subject" class="form-label">Subject</label>
-          <textarea
-            name="subject"
-            id="subject"
-            class="form-control"
-            placeholder="Enter subject..."
-            rows="1"
-            required
-          ></textarea>
-        </div>
-        <button class="btn btn-primary w-100">Generate Questions</button>
-      </form>
+{% extends "accounts/base.html" %}
+{% block title %}AI Prompt | Interview System{% endblock %}
+{% block content %}
+<div class="prompt-card mx-auto p-4" style="max-width: 760px; margin-top: 0;">
+  <span class="page-kicker"><i class="bi bi-cpu"></i> AI Generator</span>
+  <h3 class="mb-3">Generate Interview Questions</h3>
+  <p class="text-muted">Describe the role context and topic, then generate tailored questions instantly.</p>
+
+  {% if error %}
+  <div class="alert alert-danger" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form action="{% url 'generate_ai_questions' %}" method="POST" class="row g-3 mt-1">
+    {% csrf_token %}
+    <div class="col-12">
+      <label for="prompt" class="form-label">Prompt</label>
+      <textarea
+        name="prompt"
+        id="prompt"
+        class="form-control"
+        placeholder="Example: Generate practical backend Python interview questions for 2 years experience."
+        rows="4"
+        required
+      >{{ request.POST.prompt }}</textarea>
     </div>
-  </div>
-</body>
+    <div class="col-12">
+      <label for="subject" class="form-label">Subject</label>
+      <input
+        type="text"
+        name="subject"
+        id="subject"
+        class="form-control"
+        placeholder="Example: Python Backend"
+        required
+        value="{{ request.POST.subject }}"
+      />
+    </div>
+    <div class="col-12 d-flex justify-content-end">
+      <button class="btn btn-primary">Generate Questions</button>
+    </div>
+  </form>
+</div>
 {% endblock %}

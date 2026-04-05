@@ -1,9 +1,14 @@
-{% extends "accounts/base.html" %} {% load static %} {% block content %}
-<div class="container mt-5">
-  <h3>Assign Questions to {{ candidate.name }}</h3>
+{% extends "accounts/base.html" %}
+{% block title %}Assign Questions | Interview System{% endblock %}
+{% block content %}
+<div class="assign-questions-container surface-card p-4 p-md-5 mx-auto" style="max-width: 860px;">
+  <span class="page-kicker"><i class="bi bi-clipboard2-check"></i> Candidate Assignment</span>
+  <h3 class="assign-questions-title">Assign Questions to {{ candidate.name }}</h3>
+  <p class="text-muted mb-4">Select one or more questions to include in this candidate interview.</p>
+
   <form method="POST">
     {% csrf_token %}
-    <div class="mb-3">
+    <div class="mb-4">
       {% for question in questions %}
       <div class="form-check">
         <input
@@ -11,27 +16,18 @@
           type="checkbox"
           name="questions"
           value="{{ question.id }}"
-          {%
-          if
-          question
-          in
-          candidate.assigned_questions.all
-          %}checked{%
-          endif
-          %}
+          {% if question in candidate.assigned_questions.all %}checked{% endif %}
         />
         <label class="form-check-label">{{ question.text }}</label>
       </div>
       {% empty %}
-      <p>No questions available.</p>
+      <div class="empty-state">No questions available for assignment.</div>
       {% endfor %}
     </div>
-    <button type="submit" class="btn btn-success btn4">Assign Selected</button>
-    <a
-      href="{% url 'select_candidate_for_assignment' %}"
-      class="btn btn-secondary"
-      >Back</a
-    >
+    <div class="d-flex flex-wrap justify-content-end gap-2">
+      <a href="{% url 'select_candidate_for_assignment' %}" class="btn btn-outline-secondary">Back</a>
+      <button type="submit" class="btn btn-primary">Assign Selected</button>
+    </div>
   </form>
 </div>
 {% endblock %}

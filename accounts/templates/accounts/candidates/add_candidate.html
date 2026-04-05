@@ -1,40 +1,45 @@
-{% extends "accounts/base.html" %} {% load static%} {% block content %}
-<div class="container mt-4">
-  <h2>Add New Candidate</h2>
+{% extends "accounts/base.html" %}
+{% block title %}Add Candidate | Interview System{% endblock %}
+{% block content %}
+<div class="form-container mx-auto" style="max-width: 720px;">
+  <span class="page-kicker"><i class="bi bi-person-plus"></i> Candidate Setup</span>
+  <h2 class="mb-3">Add New Candidate</h2>
+  <p class="text-muted mb-4">Create a candidate profile and configure interview duration.</p>
+
   {% if error %}
   <div class="alert alert-danger">{{ error }}</div>
   {% endif %}
-  <form method="POST">
+
+  <form method="POST" class="row g-3">
     {% csrf_token %}
-    <div class="mb-3">
-      <label>Name</label>
+    <div class="col-md-6">
+      <label class="form-label">Name</label>
       <input type="text" name="name" class="form-control" required />
     </div>
-    <div class="mb-3">
-      <label>Subject</label>
+    <div class="col-md-6">
+      <label class="form-label">Subject</label>
       <input type="text" name="subject" class="form-control" required />
     </div>
-    <div class="mb-3">
-      <label>Interview Type</label>
+    <div class="col-md-6">
+      <label class="form-label">Interview Type</label>
       <select name="interview_type" class="form-select" required>
         <option value="AI">AI</option>
         <option value="Manual">Manual</option>
       </select>
     </div>
-    <div class="mb-3">
-      <label>Duration (minutes)</label>
-      <input
-        type="number"
-        name="duration_minutes"
-        class="form-control"
-        required
-      />
+    <div class="col-md-6">
+      <label class="form-label">Duration (minutes)</label>
+      <input type="number" name="duration_minutes" class="form-control" min="1" required />
     </div>
-    <button type="submit" class="btn btn-primary">Add Candidate</button>
+    <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+      <a href="{% url 'candidate_list' %}" class="btn btn-outline-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Add Candidate</button>
+    </div>
   </form>
+
   {% if candidate %}
-  <div class="alert alert-success mt-3">
-    Candidate <strong>{{ candidate.name }}</strong> added successfully!
+  <div class="alert alert-success mt-4 mb-0">
+    Candidate <strong>{{ candidate.name }}</strong> added successfully.
   </div>
   {% endif %}
 </div>

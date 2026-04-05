@@ -1,26 +1,25 @@
-{% extends "accounts/base.html" %} {% load static %} {% block content %}
+{% extends "accounts/base.html" %}
+{% block title %}Candidate Results | Interview System{% endblock %}
+{% block content %}
+<div class="page-header">
+  <span class="page-kicker"><i class="bi bi-bar-chart"></i> Results</span>
+  <h2 class="page-title">Candidate Results</h2>
+  <p class="page-subtitle">Open each candidate report and submit a final verdict.</p>
+</div>
 
-<body>
-  <div class="container mt-5">
-    <h2 class="text-center mb-4">Candidate Results</h2>
-    <div class="list-group">
-      {% for candidate in candidates %}
-      <div
-        class="list-group-item d-flex justify-content-between align-items-center"
-      >
-        <div>
-          <strong>{{ candidate.name }}</strong> – {{ candidate.subject }}
-        </div>
-        <a
-          href="{% url 'result_detail_view' candidate.candidate_id %}"
-          class="btn btn-outline-primary btn-sm"
-          >View Result</a
-        >
+<div class="surface-card p-3 p-md-4">
+  <div class="list-group list-group-flush">
+    {% for candidate in candidates %}
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ candidate.name }}</strong>
+        <span class="text-muted"> - {{ candidate.subject }}</span>
       </div>
-      {% empty %}
-      <p class="text-muted">No candidates found.</p>
-      {% endfor %}
+      <a href="{% url 'result_detail_view' candidate.candidate_id %}" class="btn btn-outline-primary btn-sm">View Result</a>
     </div>
+    {% empty %}
+    <div class="empty-state">No candidates found.</div>
+    {% endfor %}
   </div>
-</body>
+</div>
 {% endblock %}
