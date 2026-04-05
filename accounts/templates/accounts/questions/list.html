@@ -1,22 +1,23 @@
-{% extends "accounts/base.html" %} {% load static %} {% block content %}
-
-<div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">All Questions</h2>
-    <a href="{% url 'question_create' %}" class="btn btn-success">
-      ➕ Add New Question
-    </a>
+{% extends "accounts/base.html" %}
+{% block title %}Questions | Interview System{% endblock %}
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+  <div>
+    <span class="page-kicker"><i class="bi bi-patch-question"></i> Question Bank</span>
+    <h2 class="page-title">All Questions</h2>
+    <p class="page-subtitle mb-0">Manage selected questions and keep your interview sets relevant.</p>
   </div>
+  <a href="{% url 'question_create' %}" class="btn btn-success">Add New Question</a>
+</div>
 
-  {% if questions %} {% for question in questions %}
-  <div class="question-item d-flex justify-content-between align-items-start">
+{% if questions %}
+  {% for question in questions %}
+  <article class="question-item d-flex justify-content-between align-items-start gap-3">
     <div>
       <div class="question-title">{{ question.subject }}</div>
       <div class="question-text">{{ question.text }}</div>
-      <div class="mt-2">
-        <span
-          class="soft-badge {% if question.source_type == 'AI' %}ai{% else %}manual{% endif %}"
-        >
+      <div class="mt-2 d-flex flex-wrap gap-2">
+        <span class="soft-badge {% if question.source_type == 'AI' %}ai{% else %}manual{% endif %}">
           {{ question.source_type }}
         </span>
         {% if question.selected %}
@@ -26,35 +27,18 @@
         {% endif %}
       </div>
     </div>
-    <div class="d-flex flex-column gap-1">
+    <div class="d-flex flex-column gap-2">
       {% if question.selected %}
-      <a
-        href="{% url 'toggle_selected' question.pk %}"
-        class="btn btn-outline-secondary action-btn"
-        >Unselect</a
-      >
+      <a href="{% url 'toggle_selected' question.pk %}" class="btn btn-outline-secondary btn-sm action-btn">Unselect</a>
       {% else %}
-      <a
-        href="{% url 'toggle_selected' question.pk %}"
-        class="btn btn-outline-primary action-btn"
-        >Select</a
-      >
+      <a href="{% url 'toggle_selected' question.pk %}" class="btn btn-outline-primary btn-sm action-btn">Select</a>
       {% endif %}
-      <a
-        href="{% url 'question_edit' question.pk %}"
-        class="btn btn-warning action-btn"
-        >Edit</a
-      >
-      <a
-        href="{% url 'question_delete' question.pk %}"
-        class="btn btn-danger action-btn"
-        >Delete</a
-      >
+      <a href="{% url 'question_edit' question.pk %}" class="btn btn-warning btn-sm action-btn">Edit</a>
+      <a href="{% url 'question_delete' question.pk %}" class="btn btn-danger btn-sm action-btn">Delete</a>
     </div>
-  </div>
-  {% endfor %} {% else %}
-  <p class="text-center text-muted">No questions available.</p>
-  {% endif %}
-</div>
-
+  </article>
+  {% endfor %}
+{% else %}
+  <div class="empty-state">No questions available.</div>
+{% endif %}
 {% endblock %}

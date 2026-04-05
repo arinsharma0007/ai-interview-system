@@ -1,129 +1,83 @@
-{% extends "accounts/base.html" %} {% load static %} {% block content %}
-<div class="container py-5">
-  <!-- Page Title -->
-  <div class="text-center mb-5">
-    <h1 class="display-5 fw-bold text-primary">Interviewer Dashboard</h1>
-    <p class="lead text-muted">
-      Manage interviews, assign questions, and evaluate candidates — all in one
-      place.
-    </p>
-  </div>
+{% extends "accounts/base.html" %}
+{% block title %}Dashboard | Interview System{% endblock %}
+{% block content %}
+<section class="dashboard-hero">
+  <span class="page-kicker"><i class="bi bi-speedometer2"></i> Control Center</span>
+  <h1 class="page-title">Interviewer Dashboard</h1>
+  <p class="page-subtitle mb-0">
+    Manage candidates, generate and assign questions, and review interview performance from one place.
+  </p>
+</section>
 
-  <!-- Feature Cards -->
-  <div class="row g-4">
-    <!-- Add New Candidate -->
-    <div class="col-md-4">
-      <a href="{% url 'add_candidate' %}" class="text-decoration-none">
-        <div class="card shadow-sm h-100 text-center border-0 hover-effect">
-          <div class="card-body">
-            <i class="bi bi-person-plus display-4 text-primary"></i>
-            <h5 class="fw-bold mt-3">Add New Candidate</h5>
-            <p class="text-muted small">
-              Register a new candidate for interviews.
-            </p>
-          </div>
-        </div>
-      </a>
+<div class="action-grid mt-4">
+  <a href="{% url 'add_candidate' %}" class="action-tile">
+    <div class="card">
+      <div class="card-body">
+        <span class="tile-icon primary"><i class="bi bi-person-plus"></i></span>
+        <h5 class="tile-title">Add Candidate</h5>
+        <p class="tile-copy">Register a new candidate profile for upcoming interviews.</p>
+      </div>
     </div>
+  </a>
 
-    <!-- View Questions -->
-    <div class="col-md-4">
-      <a href="{% url 'question_list' %}" class="text-decoration-none">
-        <div class="card shadow-sm h-100 text-center border-0 hover-effect">
-          <div class="card-body">
-            <i class="bi bi-list-check display-4 text-success"></i>
-            <h5 class="fw-bold mt-3">View Questions</h5>
-            <p class="text-muted small">
-              Browse and manage your question bank.
-            </p>
-          </div>
-        </div>
-      </a>
+  <a href="{% url 'question_list' %}" class="action-tile">
+    <div class="card">
+      <div class="card-body">
+        <span class="tile-icon success"><i class="bi bi-list-check"></i></span>
+        <h5 class="tile-title">Question Bank</h5>
+        <p class="tile-copy">Review, edit, and curate questions for each role.</p>
+      </div>
     </div>
+  </a>
 
-    <!-- Generate AI Questions -->
-    <div class="col-md-4">
-      <a href="{% url 'ai_prompt' %}" class="text-decoration-none">
-        <div class="card shadow-sm h-100 text-center border-0 hover-effect">
-          <div class="card-body">
-            <i class="bi bi-cpu display-4 text-warning"></i>
-            <h5 class="fw-bold mt-3">Generate AI Questions</h5>
-            <p class="text-muted small">
-              Let AI create tailored interview questions.
-            </p>
-          </div>
-        </div>
-      </a>
+  <a href="{% url 'ai_prompt' %}" class="action-tile">
+    <div class="card">
+      <div class="card-body">
+        <span class="tile-icon warning"><i class="bi bi-cpu"></i></span>
+        <h5 class="tile-title">Generate with AI</h5>
+        <p class="tile-copy">Create fresh interview questions from a custom prompt.</p>
+      </div>
     </div>
+  </a>
 
-    <!-- View Candidates -->
-    <div class="col-md-4">
-      <a href="{% url 'candidate_list' %}" class="text-decoration-none">
-        <div class="card shadow-sm h-100 text-center border-0 hover-effect">
-          <div class="card-body">
-            <i class="bi bi-people display-4 text-info"></i>
-            <h5 class="fw-bold mt-3">View Candidates</h5>
-            <p class="text-muted small">
-              Track all registered candidates easily.
-            </p>
-          </div>
-        </div>
-      </a>
+  <a href="{% url 'candidate_list' %}" class="action-tile">
+    <div class="card">
+      <div class="card-body">
+        <span class="tile-icon info"><i class="bi bi-people"></i></span>
+        <h5 class="tile-title">Candidates</h5>
+        <p class="tile-copy">Track candidate records and interview configurations.</p>
+      </div>
     </div>
+  </a>
 
-    <!-- Assign Questions -->
-    <div class="col-md-4">
-      <a
-        href="{% url 'select_candidate_for_assignment' %}"
-        class="text-decoration-none"
-      >
-        <div class="card shadow-sm h-100 text-center border-0 hover-effect">
-          <div class="card-body">
-            <i class="bi bi-clipboard-plus display-4 text-danger"></i>
-            <h5 class="fw-bold mt-3">Assign Questions</h5>
-            <p class="text-muted small">
-              Assign interview questions to candidates.
-            </p>
-          </div>
-        </div>
-      </a>
+  <a href="{% url 'select_candidate_for_assignment' %}" class="action-tile">
+    <div class="card">
+      <div class="card-body">
+        <span class="tile-icon danger"><i class="bi bi-clipboard-plus"></i></span>
+        <h5 class="tile-title">Assign Questions</h5>
+        <p class="tile-copy">Attach selected questions to a candidate interview plan.</p>
+      </div>
     </div>
+  </a>
 
-    <!-- View Results -->
-    <div class="col-md-4">
-      <a href="{% url 'result_list_view' %}" class="text-decoration-none">
-        <div class="card shadow-sm h-100 text-center border-0 hover-effect">
-          <div class="card-body">
-            <i class="bi bi-graph-up display-4 text-success"></i>
-            <h5 class="fw-bold mt-3">View Results</h5>
-            <p class="text-muted small">
-              Analyze performance and feedback instantly.
-            </p>
-          </div>
-        </div>
-      </a>
+  <a href="{% url 'result_list_view' %}" class="action-tile">
+    <div class="card">
+      <div class="card-body">
+        <span class="tile-icon success"><i class="bi bi-graph-up-arrow"></i></span>
+        <h5 class="tile-title">Interview Results</h5>
+        <p class="tile-copy">Open evaluations and finalize pass or fail verdicts.</p>
+      </div>
     </div>
+  </a>
 
-    <!-- Logout -->
-    <div class="col-md-4">
-      <a href="{% url 'logout' %}" class="text-decoration-none">
-        <div class="card shadow-sm h-100 text-center border-0 hover-effect">
-          <div class="card-body">
-            <i class="bi bi-box-arrow-right display-4 text-secondary"></i>
-            <h5 class="fw-bold mt-3">Logout</h5>
-            <p class="text-muted small">Sign out from your account securely.</p>
-          </div>
-        </div>
-      </a>
+  <a href="{% url 'logout' %}" class="action-tile">
+    <div class="card">
+      <div class="card-body">
+        <span class="tile-icon neutral"><i class="bi bi-box-arrow-right"></i></span>
+        <h5 class="tile-title">Sign Out</h5>
+        <p class="tile-copy">Log out safely from the interviewer workspace.</p>
+      </div>
     </div>
-  </div>
+  </a>
 </div>
-
-<style>
-  .hover-effect:hover {
-    transform: translateY(-5px);
-    transition: 0.3s;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  }
-</style>
 {% endblock %}

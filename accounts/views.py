@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.urls import reverse
 from django.db.models import Exists, OuterRef
@@ -16,7 +17,13 @@ from .forms import QuestionForm, CandidateForm
 logger = logging.getLogger(__name__)
 
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("models/gemini-2.5-pro")
+DEFAULT_GEMINI_MODELS = [
+    os.getenv("GEMINI_MODEL", "").strip(),
+    "models/gemini-2.5-flash",
+    "models/gemini-2.5-flash-lite",
+    "models/gemini-2.0-flash",
+    "models/gemini-2.0-flash-lite",
+]
 
 # Helpers to wrap blocking calls
 a_get_object = lambda model, **kw: sync_to_async(get_object_or_404)(model, **kw)
@@ -127,54 +134,138 @@ async def interviewer_view(request):
     return render(request, "accounts/interviewer.html", {"candidate": candidate})
 
 async def ai_prompt_view(request):
-    if request.method == "POST":
-        prompt = request.POST.get("prompt")
-        if prompt:
-            request.session["prompt"] = prompt
-            return redirect("interviewee_ai")
     return render(request, "accounts/questions/ai_prompt.html")
 
 # Clean/filter functions remain synchronous (fast CPU only)
 def is_valid_question(text): ...
 def clean_question(text): ...
 
-import logging
-logger = logging.getLogger(__name__)
+def extract_text_from_gemini_response(response):
+    text = getattr(response, "text", "") or ""
+    if text.strip():
+        return text.strip()
 
-async def generate_ai_questions(request):
-    if request.method == "POST":
-        # prompt = request.POST.get("prompt", "").strip()
-        prompt = "List 5 HTML interview questions."  # Hardcoded for testing
-        subject = request.POST.get("subject", "")
-        logger.info(f"Prompt sent to Gemini: {prompt!r}")
-        if not prompt:
-            return render(request, "accounts/questions/ai_prompt.html", {"error": "Please enter a prompt."})
+    candidates = getattr(response, "candidates", None) or []
+    for candidate in candidates:
+        content = getattr(candidate, "content", None)
+        for part in getattr(content, "parts", None) or []:
+            part_text = getattr(part, "text", "") or ""
+            if part_text.strip():
+                return part_text.strip()
+    return ""
+
+
+def extract_questions(text):
+    cleaned_questions = []
+    for line in text.splitlines():
+        line = re.sub(r"^\s*(?:\d+[\).\-\s]+|[-*]\s*)", "", line).strip()
+        if not line:
+            continue
+        if "?" not in line:
+            line = f"{line.rstrip('.')}?"
+        cleaned_questions.append(line)
+
+    unique_questions = []
+    seen = set()
+    for question in cleaned_questions:
+        normalized = question.casefold()
+        if normalized not in seen:
+            seen.add(normalized)
+            unique_questions.append(question)
+    return unique_questions
+
+
+def get_configured_gemini_models():
+    models = []
+    for model_name in DEFAULT_GEMINI_MODELS:
+        if model_name and model_name not in models:
+            models.append(model_name)
+    return models
+
+
+def is_quota_error(error):
+    message = str(error).lower()
+    return "429" in message or "quota" in message or "rate limit" in message
+
+
+def get_quota_error_message():
+    tried_models = ", ".join(get_configured_gemini_models())
+    return (
+        "Gemini quota is currently unavailable for this API key. "
+        f"Tried models: {tried_models}. "
+        "Use a billed Gemini API project or set GEMINI_MODEL to a model your plan supports, "
+        "such as models/gemini-2.0-flash or models/gemini-2.5-flash."
+    )
+
+
+def generate_questions_with_gemini(prompt, subject):
+    full_prompt = (
+        f"Generate exactly 5 interview questions for {subject}. "
+        f"Return only the questions, one per line.\n\nUser prompt: {prompt}"
+    )
+
+    last_error = None
+    for model_name in get_configured_gemini_models():
         try:
-            response = await sync_to_async(model.generate_content)(prompt)
-            logger.info(f"Gemini raw response: {response!r}")
-            text = ""
-            if hasattr(response, "candidates") and response.candidates:
-                candidate = response.candidates[0]
-                if hasattr(candidate, "content"):
-                    content = candidate.content
-                    parts = getattr(content, "parts", None)
-                    if parts and len(parts) > 0 and hasattr(parts[0], "text"):
-                        text = parts[0].text
-            if not text:
-                logger.warning(f"Gemini response had no text: {response!r}")
-                # Fallback for debugging
-                text = "What is HTML?\nWhat does <a> tag do?\nHow do you add an image?\nWhat is a div?\nWhat is the difference between <ul> and <ol>?"
-            raw_lines = [line.strip(" -*") for line in text.split("\n") if line.strip()]
-            cleaned = [l for l in raw_lines if "?" in l]
-            logger.info(f"Cleaned questions: {cleaned!r}")
-        except Exception as e:
-            return render(request, "accounts/questions/ai_prompt.html", {"error": f"Error generating questions: {e}"})
-        if not cleaned:
-            return render(request, "accounts/questions/ai_prompt.html", {"error": "No valid questions generated."})
-        for q in cleaned:
-            await a_create(Question, text=q, subject=subject, source_type="AI")
-        return redirect("question_list")
-    return redirect("ai_prompt")
+            response = genai.GenerativeModel(model_name).generate_content(full_prompt)
+            logger.info("Gemini response received from model %s", model_name)
+            return response
+        except Exception as error:
+            last_error = error
+            logger.warning("Gemini request failed for model %s: %s", model_name, error)
+            if not is_quota_error(error):
+                break
+    raise last_error
+
+
+def generate_gemini_text(prompt):
+    last_error = None
+    for model_name in get_configured_gemini_models():
+        try:
+            response = genai.GenerativeModel(model_name).generate_content(prompt)
+            logger.info("Gemini response received from model %s", model_name)
+            text = extract_text_from_gemini_response(response)
+            if text:
+                return text
+            last_error = ValueError(f"Model {model_name} returned no text.")
+        except Exception as error:
+            last_error = error
+            logger.warning("Gemini request failed for model %s: %s", model_name, error)
+            if not is_quota_error(error):
+                break
+    raise last_error
+
+@require_http_methods(["POST"])
+async def generate_ai_questions(request):
+    prompt = request.POST.get("prompt", "").strip()
+    subject = request.POST.get("subject", "").strip()
+
+    logger.info("Prompt sent to Gemini: %r", prompt)
+
+    if not prompt:
+        return render(request, "accounts/questions/ai_prompt.html", {"error": "Please enter a prompt."})
+    if not subject:
+        return render(request, "accounts/questions/ai_prompt.html", {"error": "Please enter a subject."})
+    if not os.getenv("GEMINI_API_KEY"):
+        return render(request, "accounts/questions/ai_prompt.html", {"error": "GEMINI_API_KEY is not configured."})
+
+    try:
+        response = await sync_to_async(generate_questions_with_gemini)(prompt, subject)
+        logger.info("Gemini raw response: %r", response)
+        text = extract_text_from_gemini_response(response)
+        cleaned = extract_questions(text)
+        logger.info("Cleaned questions: %r", cleaned)
+    except Exception as e:
+        logger.exception("Error generating questions with Gemini")
+        error_message = get_quota_error_message() if is_quota_error(e) else f"Error generating questions: {e}"
+        return render(request, "accounts/questions/ai_prompt.html", {"error": error_message})
+
+    if not cleaned:
+        return render(request, "accounts/questions/ai_prompt.html", {"error": "No valid questions generated."})
+
+    for question_text in cleaned[:5]:
+        await a_create(Question, text=question_text, subject=subject, source_type="AI")
+    return redirect("question_list")
 
 async def interviewee_question_view(request, candidate_id, question_id):
     candidate = await a_get_object(Candidate, pk=candidate_id)
@@ -265,9 +356,26 @@ async def result_detail_view(request, candidate_id):
                   {'candidate': candidate, 'evaluated_answers': evaluated})
 
 def evaluate_answer_with_ai(question, answer):
-    prompt = f"..."
-    response = model.generate_content(prompt)
-    return response.text.strip()
+    prompt = (
+        "You are evaluating a candidate's interview answer.\n"
+        "Give a short evaluation in 3 lines:\n"
+        "1. Verdict: Strong / Acceptable / Weak\n"
+        "2. One sentence on what was good\n"
+        "3. One sentence on what was missing or incorrect\n\n"
+        f"Question: {question}\n"
+        f"Candidate answer: {answer}"
+    )
+
+    if not os.getenv("GEMINI_API_KEY"):
+        return "AI feedback unavailable: GEMINI_API_KEY is not configured."
+
+    try:
+        return generate_gemini_text(prompt)
+    except Exception as error:
+        logger.exception("Error evaluating answer with Gemini")
+        if is_quota_error(error):
+            return "AI feedback unavailable right now because Gemini quota was exceeded."
+        return f"AI feedback unavailable: {error}"
 
 # --- CRUD for Questions/Candidates ---
 async def question_list(request):
